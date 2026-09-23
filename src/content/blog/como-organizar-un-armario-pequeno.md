@@ -5,7 +5,7 @@ pubDate: 2026-09-23
 category: "Armarios y vestidores"
 heroImage: "../../assets/placeholder-vestidor.png"
 heroImageAlt: "Vestidor ordenado con la ropa clasificada por color"
-draft: true
+draft: false
 faqs:
   - question: "¿Cuánto se tarda en organizar un armario pequeño?"
     answer: "Entre tres y cinco horas si se hace de una sentada, incluyendo vaciarlo entero, clasificar y volver a montarlo. Repartirlo en varios días suele alargarlo, porque cada vez hay que retomar el hilo."
