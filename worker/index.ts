@@ -153,7 +153,10 @@ async function handleContact(request: Request, env: Env): Promise<Response> {
   try {
     await recordInCrm(env, { name, email, phone, service, message });
   } catch (err) {
-    console.error('CRM step failed, enquiry was still emailed', err);
+    console.error(
+      'CRM step failed, enquiry was still emailed:',
+      err instanceof Error ? `${err.name}: ${err.message}` : String(err),
+    );
   }
 
   return json({ ok: true });
@@ -187,6 +190,18 @@ async function recordInCrm(
      people rarely type. Phone, service and message all travel in the email.
      To put them on the contact record, create the custom attributes in
      Brevo first, then add them here. */
+  const lookupContactId = async (): Promise<number | undefined> => {
+    const res = await fetch(
+      `https://api.brevo.com/v3/contacts/${encodeURIComponent(lead.email)}`,
+      { headers: { 'api-key': env.BREVO_API_KEY, accept: 'application/json' } },
+    );
+    if (!res.ok) {
+      console.error('Brevo contact lookup failed', res.status, await res.text());
+      return undefined;
+    }
+    return ((await res.json()) as { id?: number }).id;
+  };
+
   const contactRes = await api('/contacts', {
     email: lead.email,
     attributes: { FIRSTNAME: lead.name },
@@ -194,20 +209,29 @@ async function recordInCrm(
   });
 
   let contactId: number | undefined;
-  if (contactRes.ok) {
-    contactId = ((await contactRes.json()) as { id?: number }).id;
-  } else if (contactRes.status === 400) {
-    /* Already exists. updateEnabled handles the common case, but a
-       duplicate still returns 400 in some situations, so look the id up. */
-    const lookup = await fetch(
-      `https://api.brevo.com/v3/contacts/${encodeURIComponent(lead.email)}`,
-      { headers: { 'api-key': env.BREVO_API_KEY, accept: 'application/json' } },
-    );
-    if (lookup.ok) contactId = ((await lookup.json()) as { id?: number }).id;
+
+  if (contactRes.status === 204) {
+    /* Brevo returns 204 No Content when updateEnabled updates an existing
+       contact. That passes res.ok, but the body is empty and .json() throws
+       on it. This is what silently killed deal creation. */
+    contactId = await lookupContactId();
+  } else if (contactRes.ok) {
+    const body = await contactRes.text();
+    try {
+      contactId = (JSON.parse(body) as { id?: number }).id;
+    } catch {
+      console.error('Brevo contact response was not JSON', contactRes.status, body);
+    }
+    if (!contactId) contactId = await lookupContactId();
+  } else {
+    /* 400 usually means duplicate, which the lookup resolves. Anything else
+       is worth seeing in full: 401 is a rotated key, 402 a plan limit. */
+    console.error('Brevo rejected the contact', contactRes.status, await contactRes.text());
+    if (contactRes.status === 400) contactId = await lookupContactId();
   }
 
   if (!contactId) {
-    console.error('Could not resolve a Brevo contact id', contactRes.status, await contactRes.text());
+    console.error('Could not resolve a Brevo contact id, no deal created');
     return;
   }
 
@@ -224,7 +248,9 @@ async function recordInCrm(
     linkedContactsIds: [contactId],
   });
 
-  if (!dealRes.ok) {
+  if (dealRes.ok) {
+    console.log('Brevo deal created', dealName, 'contact', contactId);
+  } else {
     console.error('Brevo rejected the deal', dealRes.status, await dealRes.text());
   }
 }
