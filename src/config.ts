@@ -40,10 +40,13 @@ export const AUTHOR = {
   bio: 'Diseño sistemas de organización que se adaptan a tu ritmo de vida, para que cada objeto tenga un lugar con sentido en tu hogar en Valencia.',
 } as const;
 
-/* Where the enquiry form POSTs its JSON. Empty means the form renders in a
-   clearly disabled state with an honest note, rather than pretending to send.
-   Fill this in once the backend is chosen (Cloudflare Worker, Web3Forms, etc). */
-export const CONTACT_FORM_ENDPOINT = '';
+/* The form posts to an API route in this site's own Worker, which relays
+   the enquiry through Brevo. Same origin, no third-party form service.
+   See worker/index.ts. Requires the BREVO_API_KEY secret on the Worker.
+
+   Blank this to switch the form off: it then renders visibly disabled with
+   an honest note rather than failing silently. */
+export const CONTACT_FORM_ENDPOINT = '/api/contact';
 
 /* Privacy notice. While empty, the consent line shows as plain text with no
    link, because a tickbox pointing at a 404 is worse than no link at all. */
