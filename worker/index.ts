@@ -14,6 +14,12 @@
 interface Env {
   ASSETS: Fetcher;
   BREVO_API_KEY: string;
+  /* Optional. Without them Brevo drops the deal into the default pipeline
+     and its first stage, which is what we want for a single pipeline.
+     Find the ids with:
+       curl -H "api-key: <KEY>" https://api.brevo.com/v3/crm/pipeline/details/all */
+  BREVO_PIPELINE_ID?: string;
+  BREVO_STAGE_ID?: string;
 }
 
 const TO = 'hola@magicorden.com';
@@ -122,7 +128,87 @@ async function handleContact(request: Request, env: Env): Promise<Response> {
     return json({ error: 'send_failed' }, 502);
   }
 
+  /* The notification email is the critical path and has now succeeded.
+     Everything below is bookkeeping: if the CRM is down or misconfigured
+     we log it and still report success, because a CRM failure must never
+     lose an enquiry that already reached the inbox. */
+  try {
+    await recordInCrm(env, { name, email, phone, service, message });
+  } catch (err) {
+    console.error('CRM step failed, enquiry was still emailed', err);
+  }
+
   return json({ ok: true });
+}
+
+/* ------------------------------------------------------------------
+   CRM: contact plus deal.
+
+   The contact is created with NO listIds, so nobody is subscribed to any
+   marketing list. The privacy policy says no commercial communications are
+   sent, and this keeps that true. A newsletter would need its own tickbox
+   and a policy change.
+   ------------------------------------------------------------------ */
+async function recordInCrm(
+  env: Env,
+  lead: { name: string; email: string; phone: string; service: string; message: string },
+) {
+  const api = (path: string, body: unknown) =>
+    fetch(`https://api.brevo.com/v3${path}`, {
+      method: 'POST',
+      headers: {
+        'api-key': env.BREVO_API_KEY,
+        'content-type': 'application/json',
+        accept: 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+  /* Only FIRSTNAME is set. Brevo rejects attributes that have not been
+     created in the account, and SMS must be in international format, which
+     people rarely type. Phone, service and message all travel in the email.
+     To put them on the contact record, create the custom attributes in
+     Brevo first, then add them here. */
+  const contactRes = await api('/contacts', {
+    email: lead.email,
+    attributes: { FIRSTNAME: lead.name },
+    updateEnabled: true,
+  });
+
+  let contactId: number | undefined;
+  if (contactRes.ok) {
+    contactId = ((await contactRes.json()) as { id?: number }).id;
+  } else if (contactRes.status === 400) {
+    /* Already exists. updateEnabled handles the common case, but a
+       duplicate still returns 400 in some situations, so look the id up. */
+    const lookup = await fetch(
+      `https://api.brevo.com/v3/contacts/${encodeURIComponent(lead.email)}`,
+      { headers: { 'api-key': env.BREVO_API_KEY, accept: 'application/json' } },
+    );
+    if (lookup.ok) contactId = ((await lookup.json()) as { id?: number }).id;
+  }
+
+  if (!contactId) {
+    console.error('Could not resolve a Brevo contact id', contactRes.status, await contactRes.text());
+    return;
+  }
+
+  /* Deal name carries the service so the pipeline is readable at a glance. */
+  const dealName = lead.service ? `${lead.service} - ${lead.name}` : `Consulta - ${lead.name}`;
+
+  const attributes: Record<string, string> = {};
+  if (env.BREVO_PIPELINE_ID) attributes.pipeline = env.BREVO_PIPELINE_ID;
+  if (env.BREVO_STAGE_ID) attributes.deal_stage = env.BREVO_STAGE_ID;
+
+  const dealRes = await api('/crm/deals', {
+    name: dealName,
+    ...(Object.keys(attributes).length ? { attributes } : {}),
+    linkedContactsIds: [contactId],
+  });
+
+  if (!dealRes.ok) {
+    console.error('Brevo rejected the deal', dealRes.status, await dealRes.text());
+  }
 }
 
 export default {
