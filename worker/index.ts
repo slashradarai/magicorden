@@ -33,7 +33,13 @@ interface Env {
    Reply-To is set to the customer, so the From address is never what
    she replies from. */
 const TO = 'leads@magicorden.com';
-const FROM = 'hola@magicorden.com';
+
+/* Same address as TO, deliberately. It must NOT be set up as "Send as" in
+   the inbox that receives these: Gmail treats a message from one of your own
+   addresses as your own sent mail and points Reply at the original
+   recipients, ignoring Reply-To. That is what sent replies to leads@ instead
+   of to the customer. One rule to remember: never add leads@ to Send as. */
+const FROM = TO;
 const SITE_ORIGINS = ['https://magicorden.com', 'https://www.magicorden.com'];
 
 /* Field caps. A genuine enquiry is nowhere near these; anything longer is
