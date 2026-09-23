@@ -69,6 +69,10 @@ export const content = {
       tabCalendar: 'Reservar llamada',
       tabForm: 'Escríbeme',
     },
+    whatsapp: {
+      label: 'Escríbeme por WhatsApp',
+      prefill: 'Hola, he visto tu web y me gustaría saber más sobre tus servicios de organización.',
+    },
     form: {
       intro: '¿Prefieres escribir? Cuéntame qué necesitas y te respondo en menos de 24 horas.',
       name: 'Nombre',
@@ -170,6 +174,10 @@ export const content = {
       loading: 'Loading the calendar...',
       tabCalendar: 'Book a call',
       tabForm: 'Send a message',
+    },
+    whatsapp: {
+      label: 'Message me on WhatsApp',
+      prefill: 'Hi, I saw your website and I would like to know more about your home organising services.',
     },
     form: {
       intro: 'Prefer to write? Tell me what you need and I will reply within 24 hours.',

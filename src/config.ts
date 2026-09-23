@@ -40,9 +40,16 @@ export const CONTACT = {
   /* Cloudflare Email Routing forwards this to Kenia's Gmail. Receive only:
      replies go out from her Gmail, not from this address. Empty hides it. */
   email: 'hola@magicorden.com',
-  /* Full international format, digits only, e.g. 34600000000. Empty hides it. */
-  whatsapp: '',
+  /* Full international format, digits only, no plus and no spaces.
+     Empty hides both the floating button and the footer link. */
+  whatsapp: '34673394120',
 } as const;
+
+/* Colour of the floating WhatsApp button.
+   'green' is WhatsApp's own #25D366, instantly recognisable.
+   'brand' uses the site's terracotta, which sits better in the palette.
+   Change this one word and the button restyles. */
+export const WHATSAPP_STYLE: 'green' | 'brand' = 'green';
 
 export const SOCIAL = {
   instagram: 'https://www.instagram.com/magicorden/',
