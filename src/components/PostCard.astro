@@ -1,0 +1,48 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props { post: CollectionEntry<'blog'> }
+const { post } = Astro.props;
+const d = post.data;
+
+const date = d.pubDate.toLocaleDateString('es-ES', {
+  day: 'numeric', month: 'long', year: 'numeric',
+});
+---
+<article class="group bg-surface-lowest transition-colors duration-500 hover:bg-surface-container">
+  <a href={`/blog/${post.id}/`} class="flex h-full flex-col">
+    {d.heroImage ? (
+      <div class="overflow-hidden">
+        <Image
+          src={d.heroImage}
+          alt={d.heroImageAlt ?? ''}
+          widths={[400, 640, 900]}
+          sizes="(min-width: 768px) 32vw, 100vw"
+          class="h-56 w-full object-cover transition-transform duration-1000 group-hover:scale-105"
+          loading="lazy"
+        />
+      </div>
+    ) : (
+      /* No stock imagery on posts without a real photograph. A tonal panel
+         carrying the category reads as intentional rather than missing. */
+      <div class="flex h-56 items-end bg-surface-highest p-6">
+        <span class="label-caps text-primary/70">{d.category}</span>
+      </div>
+    )}
+
+    <div class="flex flex-1 flex-col p-6 md:p-8">
+      <div class="mb-4 flex items-center gap-3">
+        {d.heroImage && <span class="label-caps text-primary/70">{d.category}</span>}
+        <time datetime={d.pubDate.toISOString()} class="label-caps text-on-surface-variant/70">
+          {date}
+        </time>
+      </div>
+
+      <h2 class="mb-3 font-headline text-xl leading-snug text-on-surface md:text-2xl">
+        {d.title}
+      </h2>
+      <p class="font-body text-sm leading-relaxed text-on-surface-variant">{d.description}</p>
+    </div>
+  </a>
+</article>

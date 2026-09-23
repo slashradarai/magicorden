@@ -7,12 +7,17 @@ interface Props { locale: Locale }
 const { locale } = Astro.props;
 const c = t(locale);
 
-/* The testimonials link is dropped while there are no real testimonials,
-   so the nav never points at a section that is not on the page. */
+/* Anchors are absolute, not bare fragments, so they still work from the blog
+   pages rather than trying to scroll to a section that is not there.
+   The testimonials link is dropped while there are no real testimonials. */
+const home = locale === 'es' ? '/' : '/en/';
+
 const links = [
-  { href: '#servicios', label: c.nav.servicios },
-  { href: '#metodo', label: c.nav.metodo },
-  ...(TESTIMONIALS.length > 0 ? [{ href: '#testimonios', label: c.nav.testimonios }] : []),
+  { href: `${home}#servicios`, label: c.nav.servicios },
+  { href: `${home}#metodo`, label: c.nav.metodo },
+  ...(TESTIMONIALS.length > 0 ? [{ href: `${home}#testimonios`, label: c.nav.testimonios }] : []),
+  /* Posts are Spanish only, so the blog link only appears on the Spanish side. */
+  ...(locale === 'es' ? [{ href: '/blog/', label: c.nav.blog }] : []),
 ];
 ---
 <header

@@ -1,0 +1,125 @@
+---
+import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import { t } from '../../i18n/ui';
+import { articleSchema } from '../../lib/schema';
+import { SITE, BOOKING_URL, AUTHOR } from '../../config';
+import AuthorByline from '../../components/AuthorByline.astro';
+import AuthorBio from '../../components/AuthorBio.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => data.draft !== true);
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const d = post.data;
+const { Content } = await render(post);
+
+const locale = 'es' as const;
+const c = t(locale).blog;
+
+const fmt = (date: Date) =>
+  date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+
+const url = new URL(Astro.url.pathname, SITE.domain).href;
+
+const jsonLd = articleSchema({
+  title: d.title,
+  description: d.description,
+  pubDate: d.pubDate,
+  updatedDate: d.updatedDate,
+  url,
+  image: d.heroImage?.src,
+  faqs: d.faqs,
+});
+---
+<Base
+  locale={locale}
+  title={`${d.title} | ${SITE.name}`}
+  description={d.description}
+  singleLanguage
+  ogType="article"
+  jsonLd={jsonLd}
+>
+  <article>
+    <header class="bg-surface px-6 pb-12 pt-32 md:px-12 md:pb-16 md:pt-44">
+      <div class="mx-auto max-w-3xl">
+        <a
+          href="/blog/"
+          class="label-caps mb-8 inline-block text-on-surface-variant transition-colors hover:text-primary"
+        >
+          &larr; {c.back}
+        </a>
+
+        <span class="label-caps mb-4 block text-primary">{d.category}</span>
+
+        <h1 class="mb-6 font-headline text-3xl leading-tight text-on-surface md:text-5xl">
+          {d.title}
+        </h1>
+
+        <p class="mb-8 font-body text-lg leading-relaxed text-on-surface-variant md:text-xl">
+          {d.description}
+        </p>
+
+        <AuthorByline locale={locale} pubDate={d.pubDate} updatedDate={d.updatedDate} />
+      </div>
+    </header>
+
+    {d.heroImage && (
+      <div class="mx-auto max-w-5xl px-6 md:px-12">
+        <Image
+          src={d.heroImage}
+          alt={d.heroImageAlt ?? ''}
+          widths={[640, 1024, 1400]}
+          sizes="(min-width: 768px) 80vw, 100vw"
+          class="h-[280px] w-full rounded object-cover md:h-[460px]"
+          loading="eager"
+        />
+      </div>
+    )}
+
+    <div class="bg-surface px-6 py-14 md:px-12 md:py-20">
+      <div class="prose-magic mx-auto max-w-3xl">
+        <Content />
+      </div>
+    </div>
+
+    <div class="bg-surface px-6 pb-16 md:px-12 md:pb-20">
+      <div class="mx-auto max-w-3xl">
+        <AuthorBio locale={locale} />
+      </div>
+    </div>
+
+    {d.faqs && d.faqs.length > 0 && (
+      <section class="bg-surface-low px-6 py-16 md:px-12 md:py-24">
+        <div class="mx-auto max-w-3xl">
+          <h2 class="mb-10 font-headline text-2xl text-on-surface md:text-3xl">{c.faqTitle}</h2>
+          <dl class="flex flex-col gap-8">
+            {d.faqs.map((f) => (
+              <div>
+                <dt class="mb-3 font-headline text-lg text-on-surface md:text-xl">{f.question}</dt>
+                <dd class="font-body leading-relaxed text-on-surface-variant">{f.answer}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
+    )}
+
+    <section class="bg-surface px-6 py-16 md:px-12 md:py-24">
+      <div class="mx-auto max-w-3xl bg-surface-low p-10 text-center md:p-14">
+        <h2 class="mb-4 font-headline text-2xl text-on-surface md:text-3xl">{c.ctaTitle}</h2>
+        <p class="mb-8 font-body text-on-surface-variant">{c.ctaBody}</p>
+        <a
+          href={BOOKING_URL || '/#contacto'}
+          {...(BOOKING_URL ? { target: '_blank', rel: 'noopener', 'data-booking': true } : {})}
+          class="inline-block rounded bg-primary px-9 py-4 font-body font-medium text-on-primary transition-all duration-300 hover:bg-primary-dim"
+        >
+          {t(locale).nav.cta}
+        </a>
+      </div>
+    </section>
+  </article>
+</Base>

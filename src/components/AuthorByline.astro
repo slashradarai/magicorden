@@ -1,0 +1,22 @@
+---
+import AuthorAvatar from './AuthorAvatar.astro';
+import { AUTHOR } from '../config';
+import { t, type Locale } from '../i18n/ui';
+
+interface Props { locale: Locale; pubDate: Date; updatedDate?: Date }
+const { locale, pubDate, updatedDate } = Astro.props;
+const c = t(locale).blog;
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+<div class="flex items-center gap-4">
+  <AuthorAvatar />
+  <div class="flex flex-col gap-0.5">
+    <span class="font-body text-sm font-semibold text-on-surface">{AUTHOR.name}</span>
+    <span class="label-caps text-on-surface-variant/70">
+      <time datetime={pubDate.toISOString()}>{fmt(pubDate)}</time>
+      {updatedDate && <> &middot; {c.updated} {fmt(updatedDate)}</>}
+    </span>
+  </div>
+</div>

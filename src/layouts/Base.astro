@@ -9,38 +9,61 @@ import Footer from '../components/Footer.astro';
 import BookingModal from '../components/BookingModal.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
 
-interface Props { locale: Locale }
-const { locale } = Astro.props;
+interface Props {
+  locale: Locale;
+  /* Blog pages pass their own title and description. Everything else falls
+     back to the locale's site-wide meta. */
+  title?: string;
+  description?: string;
+  /* Blog posts are Spanish only, so they have no English counterpart to
+     point hreflang at. Set this and the alternate tags are dropped. */
+  singleLanguage?: boolean;
+  /* JSON-LD, emitted as one script tag. */
+  jsonLd?: unknown;
+  ogType?: 'website' | 'article';
+}
+
+const { locale, title, description, singleLanguage = false, jsonLd, ogType = 'website' } = Astro.props;
 const c = t(locale);
 
+const pageTitle = title ?? c.meta.title;
+const pageDescription = description ?? c.meta.description;
 const canonical = new URL(Astro.url.pathname, SITE.domain).href;
-const alt = new URL(altPath(locale), SITE.domain).href;
 ---
 <!doctype html>
 <html lang={c.htmlLang}>
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{c.meta.title}</title>
-  <meta name="description" content={c.meta.description} />
+  <title>{pageTitle}</title>
+  <meta name="description" content={pageDescription} />
   <link rel="canonical" href={canonical} />
 
-  <link rel="alternate" hreflang="es-ES" href={new URL('/', SITE.domain).href} />
-  <link rel="alternate" hreflang="en-GB" href={new URL('/en/', SITE.domain).href} />
-  <link rel="alternate" hreflang="x-default" href={new URL('/', SITE.domain).href} />
+  {!singleLanguage && (
+    <>
+      <link rel="alternate" hreflang="es-ES" href={new URL('/', SITE.domain).href} />
+      <link rel="alternate" hreflang="en-GB" href={new URL('/en/', SITE.domain).href} />
+      <link rel="alternate" hreflang="x-default" href={new URL('/', SITE.domain).href} />
+    </>
+  )}
 
-  <meta property="og:type" content="website" />
+  <meta property="og:type" content={ogType} />
   <meta property="og:site_name" content={SITE.name} />
-  <meta property="og:title" content={c.meta.title} />
-  <meta property="og:description" content={c.meta.description} />
+  <meta property="og:title" content={pageTitle} />
+  <meta property="og:description" content={pageDescription} />
   <meta property="og:url" content={canonical} />
   <meta property="og:locale" content={locale === 'es' ? 'es_ES' : 'en_GB'} />
-  <meta property="og:locale:alternate" content={locale === 'es' ? 'en_GB' : 'es_ES'} />
+  {!singleLanguage && (
+    <meta property="og:locale:alternate" content={locale === 'es' ? 'en_GB' : 'es_ES'} />
+  )}
   <meta name="twitter:card" content="summary_large_image" />
 
   <meta name="theme-color" content="#fcf9f4" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="sitemap" href="/sitemap-index.xml" />
+  <link rel="alternate" type="application/rss+xml" title={`${SITE.name} blog`} href="/rss.xml" />
+
+  {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
 </head>
 <body>
   <a

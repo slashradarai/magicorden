@@ -1,0 +1,37 @@
+---
+import { Image } from 'astro:assets';
+import { AUTHOR } from '../config';
+
+interface Props { size?: 'sm' | 'lg' }
+const { size = 'sm' } = Astro.props;
+
+/* Picks up any file named src/assets/author-*.{jpg,jpeg,png,webp}.
+   Drop the photo in and it appears. No config edit, no rebuild of this file.
+   Until one exists, a monogram renders instead of a broken or missing image. */
+const found = import.meta.glob<{ default: ImageMetadata }>(
+  '../assets/author-*.{jpg,jpeg,png,webp}',
+  { eager: true },
+);
+const avatar = Object.values(found)[0]?.default;
+
+const px = size === 'lg' ? 80 : 44;
+const box = size === 'lg' ? 'h-20 w-20' : 'h-11 w-11';
+const type = size === 'lg' ? 'text-3xl' : 'text-lg';
+---
+{avatar ? (
+  <Image
+    src={avatar}
+    alt={AUTHOR.name}
+    width={px * 2}
+    height={px * 2}
+    class={`${box} shrink-0 rounded-full object-cover`}
+    loading="lazy"
+  />
+) : (
+  <span
+    class={`${box} ${type} flex shrink-0 items-center justify-center rounded-full bg-primary font-headline text-on-primary`}
+    aria-hidden="true"
+  >
+    {AUTHOR.name.charAt(0)}
+  </span>
+)}

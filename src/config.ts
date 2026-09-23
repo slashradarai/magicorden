@@ -27,6 +27,19 @@ export const BOOKING_URL = 'https://calendar.app.google/HpjT7Tscqh7r9zQY6';
 export const BOOKING_EMBED_URL =
   'https://calendar.google.com/calendar/appointments/schedules/AcZssZ1j0FWfV8tj8f9KcC3xcvdudHVQ19TFiPY0s3uHj1es6cGOUDunEisdcMCW4cE2qrOuNRQAsbEo?gv=true';
 
+/* Blog byline. The bio is condensed from the philosophy paragraph on the
+   home page, so it is wording Kenia has already approved rather than
+   anything invented about her.
+
+   Avatar: drop a photo at src/assets/author-<anything>.jpg (or .png/.webp)
+   and it appears automatically, no config change needed. Until then the
+   byline renders a monogram. */
+export const AUTHOR = {
+  name: 'Kenia',
+  role: 'Organizadora de hogares',
+  bio: 'Diseño sistemas de organización que se adaptan a tu ritmo de vida, para que cada objeto tenga un lugar con sentido en tu hogar en Valencia.',
+} as const;
+
 /* Where the enquiry form POSTs its JSON. Empty means the form renders in a
    clearly disabled state with an honest note, rather than pretending to send.
    Fill this in once the backend is chosen (Cloudflare Worker, Web3Forms, etc). */
