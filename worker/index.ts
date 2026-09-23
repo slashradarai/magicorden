@@ -25,14 +25,14 @@ interface Env {
 /* Three addresses, three jobs:
      hola@   the public one, shown on the site
      kenia@  her personal one
-     lead@   where form enquiries land, so they can be filtered cleanly
+     leads@  where form enquiries land, so they can be filtered cleanly
    All three forward to the same Gmail via Cloudflare Email Routing.
 
    FROM stays hola@ because it is already a verified sender in Brevo.
-   Sending as lead@ would mean verifying it there too, for no benefit:
+   Sending as leads@ would mean verifying it there too, for no benefit:
    Reply-To is set to the customer, so the From address is never what
    she replies from. */
-const TO = 'lead@magicorden.com';
+const TO = 'leads@magicorden.com';
 const FROM = 'hola@magicorden.com';
 const SITE_ORIGINS = ['https://magicorden.com', 'https://www.magicorden.com'];
 
