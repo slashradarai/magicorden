@@ -1,0 +1,35 @@
+---
+import { TESTIMONIALS } from '../config';
+import { t, type Locale } from '../i18n/ui';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const c = t(locale).testimonios;
+---
+{/* The section renders nothing at all while TESTIMONIALS is empty.
+    The Stitch export shipped two invented quotes crediting a person
+    called "Elena". Real quotes from real clients only. */}
+{TESTIMONIALS.length > 0 && (
+  <section id="testimonios" class="bg-surface px-6 py-24 md:px-12 md:py-32">
+    <div class="mx-auto max-w-5xl">
+      <div class="mb-16 text-center md:mb-24">
+        <span class="font-headline text-5xl leading-none text-secondary/50" aria-hidden="true">&rdquo;</span>
+        <h2 class="mt-4 font-headline text-4xl italic text-on-surface md:text-5xl">{c.title}</h2>
+      </div>
+
+      <div class="grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-20">
+        {TESTIMONIALS.map((item, i) => (
+          <figure class:list={['flex flex-col gap-6', i % 2 === 1 && 'md:mt-24']}>
+            <blockquote class="font-headline text-xl italic leading-relaxed text-on-surface">
+              &ldquo;{item.quote[locale]}&rdquo;
+            </blockquote>
+            <figcaption class="flex items-center gap-4">
+              <span class="h-px w-12 bg-outline-variant"></span>
+              <span class="label-caps text-primary">{item.author}, {item.location}</span>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+)}

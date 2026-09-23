@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   Magic Orden design tokens
+   Ported from the Stitch export DESIGN.md ("The Sun-Drenched Editorial").
+   Rules that matter:
+     - No 1px solid borders for sectioning. Separate with surface shifts.
+     - No pure black. No standard drop shadows, ambient only.
+     - Noto Serif for headings, Manrope for body.
+   ------------------------------------------------------------------ */
+
+@theme {
+  /* Surfaces, lightest to dimmest */
+  --color-surface-lowest: #ffffff;
+  --color-surface: #fcf9f4;
+  --color-surface-low: #f6f3ee;
+  --color-surface-container: #f8f3e9;
+  --color-surface-high: #f2eee2;
+  --color-surface-highest: #ece8db;
+  --color-surface-dim: #e7e3d3;
+
+  /* Ink */
+  --color-on-surface: #1c1c19;
+  --color-on-surface-variant: #66655a;
+  --color-outline: #838175;
+  --color-outline-variant: #bdb9ad;
+
+  /* Brand */
+  --color-primary: #9f3e07;
+  --color-primary-dim: #833206;
+  --color-secondary: #c05621;
+  --color-tertiary: #636561;
+  --color-on-primary: #ffffff;
+
+  /* Inverse, used for the dark footer and hover states */
+  --color-inverse-surface: #1c1c19;
+  --color-inverse-on-surface: #9f9d97;
+
+  --color-error: #a54731;
+
+  /* Type */
+  --font-headline: "Noto Serif Variable", "Noto Serif", Georgia, serif;
+  --font-body: "Manrope Variable", "Manrope", system-ui, sans-serif;
+
+  --text-display: 4.5rem;
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.02em;
+
+  /* Roundness stays small. This is stone and paper, not plastic. */
+  --radius-DEFAULT: 0.125rem;
+  --radius-lg: 0.25rem;
+  --radius-xl: 0.5rem;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Offset anchor targets so the fixed nav does not cover headings */
+    scroll-padding-top: 6rem;
+  }
+
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-on-surface);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-headline);
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--color-primary) 20%, transparent);
+    color: var(--color-primary);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@utility label-caps {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Ambient shadow, per the design system. A soft glow, never a hard drop. */
+@utility shadow-ambient {
+  box-shadow: 0 20px 40px color-mix(in srgb, var(--color-on-surface) 5%, transparent);
+}

@@ -1,0 +1,53 @@
+---
+import { Image } from 'astro:assets';
+import hero from '../assets/placeholder-hero-salon.png';
+import { t, type Locale } from '../i18n/ui';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const c = t(locale).hero;
+---
+<section class="relative flex min-h-[88vh] items-center overflow-hidden pt-24">
+  <div class="absolute inset-0 z-0">
+    <Image
+      src={hero}
+      alt={c.imageAlt}
+      widths={[640, 1024, 1600]}
+      sizes="100vw"
+      class="h-full w-full object-cover"
+      loading="eager"
+      fetchpriority="high"
+    />
+    <!-- Scrim. The original export put light text over a light photo and it
+         was unreadable, so this carries the contrast instead. -->
+    <div class="absolute inset-0 bg-gradient-to-r from-surface via-surface/85 to-surface/30"></div>
+  </div>
+
+  <div class="relative z-10 w-full max-w-screen-2xl px-6 md:px-24">
+    <div class="max-w-3xl">
+      <h1 class="mb-8 font-headline text-5xl leading-[1.05] tracking-tight text-on-surface md:text-7xl lg:text-8xl">
+        {c.titleA}<br />
+        <span class="font-normal italic">{c.titleB}</span>
+      </h1>
+
+      <p class="mb-12 max-w-xl font-body text-lg leading-relaxed text-on-surface-variant md:text-2xl">
+        {c.body}
+      </p>
+
+      <div class="flex flex-wrap items-center gap-6 md:gap-8">
+        <a
+          href="#servicios"
+          class="rounded bg-primary px-8 py-4 font-body text-base font-medium text-on-primary transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary-dim md:px-10 md:text-lg"
+        >
+          {c.ctaPrimary}
+        </a>
+        <a
+          href="#metodo"
+          class="border-b-2 border-secondary/30 pb-1 font-body font-semibold text-secondary transition-all hover:border-secondary"
+        >
+          {c.ctaSecondary}
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

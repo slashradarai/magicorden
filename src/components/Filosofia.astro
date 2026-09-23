@@ -1,0 +1,37 @@
+---
+import { Image } from 'astro:assets';
+import img from '../assets/placeholder-filosofia-cocina.png';
+import { t, type Locale } from '../i18n/ui';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const c = t(locale).filosofia;
+---
+<section id="metodo" class="bg-surface px-6 py-24 md:px-12 md:py-40">
+  <div class="mx-auto max-w-7xl">
+    <div class="relative md:flex md:items-center">
+      <div class="w-full md:w-3/5">
+        <Image
+          src={img}
+          alt={c.imageAlt}
+          widths={[480, 800, 1024]}
+          sizes="(min-width: 768px) 60vw, 100vw"
+          class="h-[320px] w-full rounded object-cover md:h-[560px]"
+          loading="lazy"
+        />
+      </div>
+
+      <!-- Overlapping panel, per the design system's "physical items on a
+           desk" rule. Stacks cleanly rather than overlapping on mobile. -->
+      <div
+        class="relative z-10 -mt-12 mx-4 bg-surface-low p-8 shadow-ambient md:mx-0 md:mt-0 md:-ml-24 md:w-1/2 md:p-14"
+      >
+        <span class="label-caps mb-4 block text-primary">{c.eyebrow}</span>
+        <h2 class="mb-6 font-headline text-3xl text-on-surface md:text-4xl">{c.title}</h2>
+        <p class="font-body text-base leading-relaxed text-on-surface-variant md:text-lg">
+          {c.body}
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

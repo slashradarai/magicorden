@@ -1,0 +1,38 @@
+---
+import { BOOKING_URL, CONTACT } from '../config';
+import { t, type Locale } from '../i18n/ui';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const c = t(locale).cta;
+
+const wa = CONTACT.whatsapp ? `https://wa.me/${CONTACT.whatsapp}` : '';
+const fallback = wa || (CONTACT.email ? `mailto:${CONTACT.email}` : '');
+---
+<section id="contacto" class="bg-surface px-6 py-24 md:px-12 md:py-32">
+  <div class="relative mx-auto max-w-7xl overflow-hidden bg-surface-low p-10 text-center md:p-20">
+    <div class="relative z-10">
+      <h2 class="mb-8 font-headline text-4xl text-on-surface md:text-5xl">{c.title}</h2>
+      <p class="mx-auto mb-12 max-w-2xl font-body text-lg text-on-surface-variant md:text-xl">
+        {c.body}
+      </p>
+
+      {BOOKING_URL || fallback ? (
+        <a
+          href={BOOKING_URL || fallback}
+          {...(BOOKING_URL ? { target: '_blank', rel: 'noopener', 'data-booking': true } : {})}
+          class="inline-block rounded bg-primary px-10 py-5 font-body text-lg font-medium text-on-primary transition-all duration-500 hover:bg-inverse-surface md:px-12"
+        >
+          {c.button}
+        </a>
+      ) : (
+        /* No booking URL and no contact method yet. A dead button is worse
+           than an honest line, so say so rather than linking to nowhere. */
+        <p class="label-caps text-on-surface-variant">{c.pending}</p>
+      )}
+    </div>
+
+    <div class="pointer-events-none absolute -right-32 -top-32 h-64 w-64 rounded-full bg-primary/5 blur-[100px]"></div>
+    <div class="pointer-events-none absolute -bottom-32 -left-32 h-64 w-64 rounded-full bg-secondary/5 blur-[100px]"></div>
+  </div>
+</section>

@@ -1,0 +1,116 @@
+---
+import { BOOKING_URL, TESTIMONIALS } from '../config';
+import { t, type Locale } from '../i18n/ui';
+import LangToggle from './LangToggle.astro';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const c = t(locale);
+
+/* The testimonials link is dropped while there are no real testimonials,
+   so the nav never points at a section that is not on the page. */
+const links = [
+  { href: '#servicios', label: c.nav.servicios },
+  { href: '#metodo', label: c.nav.metodo },
+  ...(TESTIMONIALS.length > 0 ? [{ href: '#testimonios', label: c.nav.testimonios }] : []),
+];
+---
+<header
+  class="fixed top-0 z-50 w-full bg-surface/80 backdrop-blur-xl supports-[backdrop-filter]:bg-surface/70"
+>
+  <div class="mx-auto flex w-full max-w-screen-2xl items-center justify-between px-6 py-5 md:px-12 md:py-6">
+    <a
+      href={locale === 'es' ? '/' : '/en/'}
+      class="font-headline text-xl font-bold uppercase tracking-[0.18em] text-primary md:text-2xl"
+    >
+      Magic Orden
+    </a>
+
+    <nav class="hidden items-center gap-10 md:flex" aria-label={c.nav.servicios}>
+      {links.map((l) => (
+        <a
+          href={l.href}
+          class="font-headline text-sm tracking-tight text-on-surface opacity-80 transition-all duration-300 hover:text-primary hover:opacity-100"
+        >
+          {l.label}
+        </a>
+      ))}
+
+      <LangToggle locale={locale} id="desktop" />
+
+      <a
+        href={BOOKING_URL || '#contacto'}
+        {...(BOOKING_URL ? { target: '_blank', rel: 'noopener', 'data-booking': true } : {})}
+        class="rounded bg-primary px-7 py-3 text-sm font-medium text-on-primary transition-all duration-300 hover:bg-inverse-surface"
+      >
+        {c.nav.cta}
+      </a>
+    </nav>
+
+    <button
+      type="button"
+      id="menu-toggle"
+      class="text-primary md:hidden"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      aria-label={c.nav.menuOpen}
+      data-label-open={c.nav.menuOpen}
+      data-label-close={c.nav.menuClose}
+    >
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <path id="icon-open" d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round" />
+        <path id="icon-close" class="hidden" d="M6 6l12 12M18 6L6 18" stroke-linecap="round" />
+      </svg>
+    </button>
+  </div>
+
+  <div id="mobile-menu" class="hidden bg-surface-low px-6 pb-8 pt-2 md:hidden">
+    <nav class="flex flex-col gap-5" aria-label={c.nav.servicios}>
+      {links.map((l) => (
+        <a href={l.href} class="font-headline text-lg text-on-surface" data-close>{l.label}</a>
+      ))}
+      <div class="pt-1"><LangToggle locale={locale} id="mobile" /></div>
+      <a
+        href={BOOKING_URL || '#contacto'}
+        {...(BOOKING_URL ? { target: '_blank', rel: 'noopener', 'data-booking': true } : {})}
+        class="mt-2 rounded bg-primary px-7 py-3 text-center text-sm font-medium text-on-primary"
+        data-close
+      >
+        {c.nav.cta}
+      </a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const toggle = document.getElementById('menu-toggle');
+  const menu = document.getElementById('mobile-menu');
+  const open = document.getElementById('icon-open');
+  const close = document.getElementById('icon-close');
+
+  if (toggle && menu && open && close) {
+    const setState = (isOpen: boolean) => {
+      menu.classList.toggle('hidden', !isOpen);
+      open.classList.toggle('hidden', isOpen);
+      close.classList.toggle('hidden', !isOpen);
+      toggle.setAttribute('aria-expanded', String(isOpen));
+      const label = isOpen ? toggle.dataset.labelClose : toggle.dataset.labelOpen;
+      if (label) toggle.setAttribute('aria-label', label);
+    };
+
+    toggle.addEventListener('click', () => {
+      setState(menu.classList.contains('hidden'));
+    });
+
+    menu.querySelectorAll('[data-close]').forEach((el) =>
+      el.addEventListener('click', () => setState(false))
+    );
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !menu.classList.contains('hidden')) {
+        setState(false);
+        toggle.focus();
+      }
+    });
+  }
+</script>

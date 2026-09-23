@@ -1,0 +1,144 @@
+---
+import { BOOKING_URL, BOOKING_EMBED_URL } from '../config';
+import { t, type Locale } from '../i18n/ui';
+import ContactForm from './ContactForm.astro';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const c = t(locale).booking;
+
+const tab =
+  'flex-1 px-4 py-3 font-body text-sm transition-colors duration-200 border-b-2 ' +
+  'aria-selected:border-primary aria-selected:text-primary ' +
+  'border-transparent text-on-surface-variant hover:text-on-surface';
+---
+<div
+  id="booking-modal"
+  class="fixed inset-0 z-[100] hidden items-center justify-center p-4 md:p-8"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="booking-title"
+  data-embed={BOOKING_EMBED_URL}
+>
+  <div class="absolute inset-0 bg-on-surface/40 backdrop-blur-sm" data-booking-close></div>
+
+  <div class="relative flex h-[min(90vh,800px)] w-full max-w-3xl flex-col bg-surface-lowest shadow-ambient">
+    <div class="flex items-center justify-between px-6 pt-5 md:px-8">
+      <h2 id="booking-title" class="font-headline text-xl text-on-surface md:text-2xl">{c.title}</h2>
+      <button
+        type="button"
+        class="-mr-2 rounded p-2 text-on-surface-variant transition-colors hover:text-primary"
+        aria-label={c.close}
+        data-booking-close
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="flex px-6 pt-4 md:px-8" role="tablist" aria-labelledby="booking-title">
+      <button type="button" class={tab} role="tab" id="tab-calendar"
+              aria-controls="panel-calendar" aria-selected="true" data-tab="calendar">
+        {c.tabCalendar}
+      </button>
+      <button type="button" class={tab} role="tab" id="tab-form"
+              aria-controls="panel-form" aria-selected="false" data-tab="form">
+        {c.tabForm}
+      </button>
+    </div>
+
+    <div class="relative flex-1 overflow-hidden bg-surface-low">
+      <div id="panel-calendar" role="tabpanel" aria-labelledby="tab-calendar" class="h-full">
+        {BOOKING_EMBED_URL ? (
+          <div class="relative h-full">
+            <p id="booking-loading" class="label-caps absolute inset-0 flex items-center justify-center text-on-surface-variant">
+              {c.loading}
+            </p>
+            <!-- src is set on first open, so Google is never contacted for
+                 visitors who do not open the booking tab. -->
+            <iframe id="booking-frame" title={c.tabCalendar} class="relative h-full w-full border-0" loading="lazy"></iframe>
+          </div>
+        ) : (
+          <p class="flex h-full items-center justify-center px-8 text-center font-body text-on-surface-variant">
+            {c.loading}
+          </p>
+        )}
+      </div>
+
+      <div id="panel-form" role="tabpanel" aria-labelledby="tab-form" class="hidden h-full">
+        <ContactForm locale={locale} />
+      </div>
+    </div>
+
+    {BOOKING_URL && (
+      <div class="px-6 py-3 text-center md:px-8" data-calendar-only>
+        <a href={BOOKING_URL} target="_blank" rel="noopener"
+           class="font-body text-xs text-on-surface-variant underline decoration-outline-variant underline-offset-4 transition-colors hover:text-primary">
+          {c.newTab}
+        </a>
+      </div>
+    )}
+  </div>
+</div>
+
+<script>
+  const modal = document.getElementById('booking-modal');
+  const frame = document.getElementById('booking-frame') as HTMLIFrameElement | null;
+  const loading = document.getElementById('booking-loading');
+
+  if (modal) {
+    let lastTrigger: HTMLElement | null = null;
+
+    const panels: Record<string, HTMLElement | null> = {
+      calendar: document.getElementById('panel-calendar'),
+      form: document.getElementById('panel-form'),
+    };
+    const tabs = modal.querySelectorAll<HTMLButtonElement>('[data-tab]');
+    const calendarOnly = modal.querySelector<HTMLElement>('[data-calendar-only]');
+
+    const selectTab = (name: string) => {
+      tabs.forEach((t) => t.setAttribute('aria-selected', String(t.dataset.tab === name)));
+      Object.entries(panels).forEach(([key, el]) => el?.classList.toggle('hidden', key !== name));
+      // The "open in a new tab" link only makes sense next to the calendar.
+      calendarOnly?.classList.toggle('hidden', name !== 'calendar');
+      if (name === 'calendar' && frame && !frame.src) {
+        frame.src = modal.dataset.embed ?? '';
+        frame.addEventListener('load', () => loading?.classList.add('hidden'), { once: true });
+      }
+    };
+
+    tabs.forEach((t) => t.addEventListener('click', () => selectTab(t.dataset.tab!)));
+
+    const open = (trigger: HTMLElement | null, which: string) => {
+      lastTrigger = trigger;
+      selectTab(which);
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+      modal.querySelector<HTMLButtonElement>('[data-booking-close]')?.focus();
+    };
+
+    const close = () => {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.body.style.overflow = '';
+      lastTrigger?.focus();
+    };
+
+    document.querySelectorAll<HTMLElement>('[data-booking]').forEach((el) => {
+      el.addEventListener('click', (e) => {
+        // Without JS these stay ordinary links, so they still work if this
+        // script never runs.
+        e.preventDefault();
+        open(el, el.dataset.booking === 'form' ? 'form' : 'calendar');
+      });
+    });
+
+    modal.querySelectorAll('[data-booking-close]').forEach((el) => el.addEventListener('click', close));
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !modal.classList.contains('hidden')) close();
+    });
+  }
+</script>

@@ -1,0 +1,17 @@
+---
+import Base from '../../layouts/Base.astro';
+import Hero from '../../components/Hero.astro';
+import Filosofia from '../../components/Filosofia.astro';
+import Servicios from '../../components/Servicios.astro';
+import Testimonios from '../../components/Testimonios.astro';
+import CTA from '../../components/CTA.astro';
+
+const locale = 'en' as const;
+---
+<Base locale={locale}>
+  <Hero locale={locale} />
+  <Filosofia locale={locale} />
+  <Servicios locale={locale} />
+  <Testimonios locale={locale} />
+  <CTA locale={locale} />
+</Base>

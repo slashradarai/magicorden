@@ -1,0 +1,88 @@
+---
+import Flag from './Flag.astro';
+import { t, type Locale } from '../i18n/ui';
+
+interface Props { locale: Locale; id: string }
+const { locale, id } = Astro.props;
+const c = t(locale);
+
+const options = [
+  { code: 'es' as const, country: 'es' as const, label: 'Español', href: '/' },
+  { code: 'en' as const, country: 'gb' as const, label: 'English', href: '/en/' },
+];
+const current = options.find((o) => o.code === locale)!;
+---
+<div class="relative" data-lang-root={id}>
+  <button
+    type="button"
+    id={`lang-btn-${id}`}
+    class="flex items-center gap-2 rounded px-2 py-1.5 transition-colors duration-300 hover:bg-surface-highest"
+    aria-haspopup="true"
+    aria-expanded="false"
+    aria-controls={`lang-menu-${id}`}
+    aria-label={c.nav.langLabel}
+  >
+    <Flag country={current.country} class="h-4 w-6 rounded-[1px] object-cover" />
+    <span class="label-caps text-on-surface-variant">{current.code.toUpperCase()}</span>
+    <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor"
+         stroke-width="1.6" class="text-on-surface-variant transition-transform duration-300" data-chevron>
+      <path d="M2 4.5 L6 8.5 L10 4.5" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </button>
+
+  <div
+    id={`lang-menu-${id}`}
+    class="absolute right-0 z-50 mt-2 hidden min-w-[9.5rem] bg-surface-lowest py-2 shadow-ambient"
+    role="menu"
+    aria-labelledby={`lang-btn-${id}`}
+  >
+    {options.map((o) => (
+      <a
+        href={o.href}
+        hreflang={o.code === 'es' ? 'es-ES' : 'en-GB'}
+        role="menuitem"
+        aria-current={o.code === locale ? 'true' : undefined}
+        class:list={[
+          'flex items-center gap-3 px-4 py-2.5 font-body text-sm transition-colors duration-200 hover:bg-surface-low',
+          o.code === locale ? 'text-primary' : 'text-on-surface-variant',
+        ]}
+      >
+        <Flag country={o.country} class="h-4 w-6 shrink-0 rounded-[1px]" />
+        <span>{o.label}</span>
+      </a>
+    ))}
+  </div>
+</div>
+
+<script>
+  /* Astro bundles this once no matter how many toggles are on the page,
+     so it wires up every instance it finds. */
+  document.querySelectorAll<HTMLElement>('[data-lang-root]').forEach((root) => {
+    const btn = root.querySelector<HTMLButtonElement>('button');
+    const menu = root.querySelector<HTMLElement>('[role="menu"]');
+    const chevron = root.querySelector<SVGElement>('[data-chevron]');
+    if (!btn || !menu) return;
+
+    const setOpen = (open: boolean) => {
+      menu.classList.toggle('hidden', !open);
+      btn.setAttribute('aria-expanded', String(open));
+      chevron?.classList.toggle('rotate-180', open);
+    };
+
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setOpen(menu.classList.contains('hidden'));
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!root.contains(e.target as Node)) setOpen(false);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !menu.classList.contains('hidden')) {
+        setOpen(false);
+        btn.focus();
+      }
+    });
+  });
+</script>

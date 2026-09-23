@@ -1,0 +1,75 @@
+---
+import { CONTACT, SOCIAL, SITE, BOOKING_URL } from '../config';
+import { t, type Locale } from '../i18n/ui';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const c = t(locale).footer;
+
+const year = new Date().getFullYear();
+
+const social = [
+  SOCIAL.instagram && { label: 'Instagram', href: SOCIAL.instagram },
+  SOCIAL.pinterest && { label: 'Pinterest', href: SOCIAL.pinterest },
+].filter(Boolean) as { label: string; href: string; booking?: 'form' }[];
+
+const contact = [
+  { label: c.email, href: BOOKING_URL || '#contacto', booking: 'form' as const },
+  // The address itself, shown in full. People like seeing a real one.
+  CONTACT.email && { label: CONTACT.email, href: `mailto:${CONTACT.email}` },
+  CONTACT.whatsapp && { label: c.whatsapp, href: `https://wa.me/${CONTACT.whatsapp}` },
+].filter(Boolean) as { label: string; href: string; booking?: 'form' }[];
+---
+<footer class="w-full bg-surface-low pb-12 pt-20 md:pt-24">
+  <div class="mx-auto grid max-w-screen-2xl grid-cols-1 gap-12 px-6 md:grid-cols-2 md:gap-16 md:px-12">
+    <div class="flex flex-col gap-6">
+      <span class="font-headline text-2xl font-bold uppercase tracking-[0.18em] text-primary md:text-3xl">
+        Magic Orden
+      </span>
+      <p class="max-w-md font-body leading-relaxed text-on-surface-variant">{c.tagline}</p>
+    </div>
+
+    <div class="grid grid-cols-2 gap-8">
+      {social.length > 0 && (
+        <div class="flex flex-col gap-5">
+          <span class="label-caps text-primary">{c.follow}</span>
+          <div class="flex flex-col gap-3">
+            {social.map((s) => (
+              <a
+                href={s.href}
+                target="_blank"
+                rel="noopener"
+                class="font-body text-sm text-on-surface-variant transition-colors duration-300 hover:text-primary"
+              >
+                {s.label}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {contact.length > 0 && (
+        <div class="flex flex-col gap-5">
+          <span class="label-caps text-primary">{c.contact}</span>
+          <div class="flex flex-col gap-3">
+            {contact.map((s) => (
+              <a
+                href={s.href}
+                {...(s.booking ? { 'data-booking': s.booking } : {})}
+                class="font-body text-sm text-on-surface-variant transition-colors duration-300 hover:text-primary"
+              >
+                {s.label}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  </div>
+
+  <div class="mx-auto mt-16 max-w-screen-2xl px-6 pt-8 text-center md:px-12">
+    <p class="label-caps text-on-surface-variant/70">
+      &copy; {year} {SITE.name} {SITE.city}. {c.rights}
+    </p>
+  </div>
+</footer>
