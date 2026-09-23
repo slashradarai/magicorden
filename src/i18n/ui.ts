@@ -123,6 +123,8 @@ export const content = {
       email: 'Escríbeme',
       whatsapp: 'WhatsApp',
       rights: 'Todos los derechos reservados.',
+      privacy: 'Privacidad',
+      legal: 'Aviso legal',
     },
   },
 
@@ -230,6 +232,8 @@ export const content = {
       email: 'Email me',
       whatsapp: 'WhatsApp',
       rights: 'All rights reserved.',
+      privacy: 'Privacidad',
+      legal: 'Aviso legal',
     },
   },
 } as const;

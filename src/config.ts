@@ -47,7 +47,7 @@ export const CONTACT_FORM_ENDPOINT = '';
 
 /* Privacy notice. While empty, the consent line shows as plain text with no
    link, because a tickbox pointing at a 404 is worse than no link at all. */
-export const PRIVACY_URL = '';
+export const PRIVACY_URL = '/privacidad/';
 
 export const CONTACT = {
   /* Cloudflare Email Routing forwards this to Kenia's Gmail. Receive only:

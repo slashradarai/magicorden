@@ -1,0 +1,91 @@
+---
+/* DRAFTED WITHOUT LEGAL REVIEW. See the note at the top of privacidad.astro.
+   Every <LegalTodo> must be resolved before this page is of any legal use. */
+import Legal from '../layouts/Legal.astro';
+import LegalTodo from '../components/LegalTodo.astro';
+import { CONTACT, SITE } from '../config';
+---
+<Legal
+  title="Aviso legal"
+  description="Datos identificativos del titular de magicorden.com y condiciones de uso del sitio web."
+  updated="23 de septiembre de 2026"
+>
+  <h2>1. Datos identificativos</h2>
+  <p>
+    En cumplimiento del artículo 10 de la Ley 34/2002 de Servicios de la Sociedad de
+    la Información y de Comercio Electrónico, se facilitan los siguientes datos:
+  </p>
+
+  <LegalTodo>
+    Completar el nombre legal, el NIF o DNI y el domicilio antes de que la web
+    reciba consultas reales. Sin estos datos este aviso no cumple la LSSI-CE.
+  </LegalTodo>
+
+  <ul>
+    <li><strong>Titular:</strong> [nombre y apellidos]</li>
+    <li><strong>NIF/DNI:</strong> [pendiente]</li>
+    <li><strong>Domicilio:</strong> [pendiente], Valencia, España</li>
+    <li><strong>Email de contacto:</strong> <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a></li>
+    <li><strong>Sitio web:</strong> {SITE.domain}</li>
+    <li><strong>Actividad:</strong> servicios de organización de hogares</li>
+  </ul>
+
+  <h2>2. Objeto</h2>
+  <p>
+    Este aviso regula el acceso y el uso de {SITE.domain}. Navegar por el sitio
+    supone aceptar estas condiciones.
+  </p>
+
+  <h2>3. Condiciones de uso</h2>
+  <p>
+    El sitio se ofrece con fines informativos y para permitir el contacto con
+    Magic Orden. Al usarlo te comprometes a no emplearlo para fines ilícitos, a no
+    dañar su funcionamiento y a no intentar acceder a partes restringidas.
+  </p>
+  <p>
+    La información publicada tiene carácter orientativo. Los consejos de organización
+    son eso, consejos, y no sustituyen a una valoración presencial de tu caso.
+  </p>
+
+  <h2>4. Propiedad intelectual</h2>
+  <p>
+    Los textos, el diseño, los logotipos y demás contenidos de este sitio pertenecen
+    a su titular o se usan con la autorización correspondiente. No está permitida su
+    reproducción, distribución o modificación sin consentimiento previo por escrito,
+    salvo el uso personal y privado.
+  </p>
+
+  <LegalTodo>
+    Las fotografías actuales del sitio son imágenes de archivo generadas con IA y se
+    sustituirán por fotografía propia. Revisar esta cláusula cuando se haga el cambio,
+    y comprobar la licencia de cualquier imagen de terceros que se utilice.
+  </LegalTodo>
+
+  <h2>5. Responsabilidad</h2>
+  <p>
+    Se procura que la información del sitio sea correcta y esté actualizada, pero no
+    se garantiza que esté libre de errores ni que el servicio funcione sin
+    interrupciones. No se asume responsabilidad por los daños que pudieran derivarse
+    del uso del sitio.
+  </p>
+
+  <h2>6. Enlaces a otros sitios</h2>
+  <p>
+    Este sitio enlaza a servicios de terceros como Google Calendar, WhatsApp e
+    Instagram. No controlamos esos sitios ni respondemos de sus contenidos o de sus
+    políticas de privacidad.
+  </p>
+
+  <h2>7. Protección de datos</h2>
+  <p>
+    El tratamiento de datos personales se explica en la
+    <a href="/privacidad/">política de privacidad</a>.
+  </p>
+
+  <h2>8. Legislación aplicable</h2>
+  <p>
+    Estas condiciones se rigen por la legislación española. Para cualquier
+    controversia, las partes se someten a los juzgados y tribunales que correspondan
+    conforme a derecho.
+  </p>
+</Legal>

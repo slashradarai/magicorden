@@ -1,0 +1,17 @@
+---
+import Base from './Base.astro';
+import type { Locale } from '../i18n/ui';
+
+interface Props { title: string; description: string; updated: string }
+const { title, description, updated } = Astro.props;
+const locale = 'es' as const satisfies Locale;
+---
+<Base locale={locale} title={`${title} | Magic Orden`} description={description} singleLanguage>
+  <section class="bg-surface px-6 pb-20 pt-32 md:px-12 md:pb-28 md:pt-44">
+    <div class="mx-auto max-w-3xl">
+      <h1 class="mb-4 font-headline text-3xl text-on-surface md:text-5xl">{title}</h1>
+      <p class="label-caps mb-12 text-on-surface-variant/70">Última actualización: {updated}</p>
+      <div class="prose-magic"><slot /></div>
+    </div>
+  </section>
+</Base>

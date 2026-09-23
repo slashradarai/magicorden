@@ -68,6 +68,14 @@ const contact = [
   </div>
 
   <div class="mx-auto mt-16 max-w-screen-2xl px-6 pt-8 text-center md:px-12">
+    <nav class="mb-4 flex flex-wrap justify-center gap-x-6 gap-y-2" aria-label="Legal">
+      <a href="/privacidad/" class="label-caps text-on-surface-variant/70 transition-colors hover:text-primary">
+        {c.privacy}
+      </a>
+      <a href="/aviso-legal/" class="label-caps text-on-surface-variant/70 transition-colors hover:text-primary">
+        {c.legal}
+      </a>
+    </nav>
     <p class="label-caps text-on-surface-variant/70">
       &copy; {year} {SITE.name} {SITE.city}. {c.rights}
     </p>

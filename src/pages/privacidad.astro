@@ -1,0 +1,158 @@
+---
+/* ------------------------------------------------------------------
+   DRAFTED WITHOUT LEGAL REVIEW.
+
+   The factual content is accurate: it describes exactly what this site
+   does, which was verified against the live site (zero cookies, no
+   browser storage, Google loaded only on click, fonts self-hosted).
+
+   The legal framing follows GDPR and Spain's LOPDGDD, but it has not
+   been checked by a lawyer. Before this carries real weight, have it
+   reviewed, particularly the legal bases and retention periods.
+
+   Every <LegalTodo> block must be resolved and removed before the
+   contact form is switched on.
+   ------------------------------------------------------------------ */
+import Legal from '../layouts/Legal.astro';
+import LegalTodo from '../components/LegalTodo.astro';
+import { CONTACT } from '../config';
+---
+<Legal
+  title="Política de privacidad"
+  description="Cómo Magic Orden recoge, usa y protege tus datos personales. Qué datos se recogen, con qué finalidad y qué derechos tienes."
+  updated="23 de septiembre de 2026"
+>
+  <h2>1. Responsable del tratamiento</h2>
+
+  <LegalTodo>
+    Completar con el nombre y apellidos legales, el NIF o DNI y la dirección postal
+    antes de activar el formulario de contacto. La LSSI-CE exige estos datos en un
+    sitio web comercial.
+  </LegalTodo>
+
+  <ul>
+    <li><strong>Titular:</strong> [nombre y apellidos]</li>
+    <li><strong>NIF/DNI:</strong> [pendiente]</li>
+    <li><strong>Domicilio:</strong> [pendiente], Valencia, España</li>
+    <li><strong>Email:</strong> <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a></li>
+  </ul>
+
+  <h2>2. Qué datos recogemos y cómo</h2>
+
+  <h3>Formulario de contacto</h3>
+  <p>
+    Cuando rellenas el formulario recogemos tu <strong>nombre</strong>, tu
+    <strong>email</strong>, tu <strong>teléfono</strong> (opcional), el
+    <strong>servicio que te interesa</strong> y el <strong>mensaje</strong> que escribes.
+    Nada más. No hay campos ocultos que recojan otra información.
+  </p>
+
+  <h3>Reserva de cita</h3>
+  <p>
+    El calendario de reservas lo gestiona Google Calendar. Al abrir esa pestaña se
+    carga contenido de Google, que recogerá los datos que tú le facilites al reservar
+    y los suyos propios conforme a su propia política. Mientras no abras esa pestaña,
+    esta web no se comunica con Google en ningún momento.
+  </p>
+
+  <h3>WhatsApp</h3>
+  <p>
+    El botón de WhatsApp abre una conversación en tu propia aplicación. La
+    conversación la procesa Meta conforme a sus condiciones. Esta web no guarda
+    ni ve esos mensajes.
+  </p>
+
+  <h3>Correo electrónico</h3>
+  <p>
+    Si escribes a {CONTACT.email}, conservamos el mensaje y tu dirección para poder
+    responderte y llevar un histórico de la conversación.
+  </p>
+
+  <h3>Estadísticas de visitas</h3>
+  <p>
+    Usamos Cloudflare Web Analytics, que mide visitas de forma agregada
+    <strong>sin cookies, sin huella digital y sin identificar a nadie</strong>.
+    No sabemos quién eres ni podemos seguirte entre sitios web.
+  </p>
+
+  <h2>3. Con qué finalidad</h2>
+  <ul>
+    <li>Responder a tu consulta y darte presupuesto.</li>
+    <li>Gestionar la cita y prestar el servicio contratado.</li>
+    <li>Cumplir las obligaciones legales y fiscales que correspondan.</li>
+    <li>Entender de forma agregada cómo se usa la web.</li>
+  </ul>
+  <p>
+    <strong>No enviamos comunicaciones comerciales</strong> ni newsletters, y no
+    cedemos ni vendemos tus datos a terceros con fines publicitarios.
+  </p>
+
+  <h2>4. Base jurídica</h2>
+  <ul>
+    <li><strong>Tu consentimiento</strong>, que das al marcar la casilla del formulario, para tratar tu consulta.</li>
+    <li><strong>La ejecución de un contrato</strong> o de medidas precontractuales, cuando reservas o contratas un servicio.</li>
+    <li><strong>Obligación legal</strong>, para la facturación y la conservación contable.</li>
+    <li><strong>Interés legítimo</strong>, para las estadísticas agregadas de visitas, que no permiten identificarte.</li>
+  </ul>
+
+  <h2>5. Quién más trata tus datos</h2>
+  <p>Para funcionar, esta web se apoya en los siguientes proveedores:</p>
+  <ul>
+    <li><strong>Cloudflare, Inc.</strong> (EEUU): alojamiento web, DNS, reenvío de correo y estadísticas.</li>
+    <li><strong>Brevo (Sendinblue SAS)</strong> (Francia): envío de correo electrónico.</li>
+    <li><strong>Google Ireland Limited</strong>: calendario de reservas.</li>
+    <li><strong>Meta Platforms Ireland Limited</strong>: WhatsApp, si eliges ese canal.</li>
+  </ul>
+
+  <LegalTodo>
+    Añadir aquí el proveedor del formulario de contacto cuando se elija, ya que
+    tratará los datos del formulario en nuestro nombre.
+  </LegalTodo>
+
+  <p>
+    Algunos de estos proveedores están en Estados Unidos. Las transferencias se
+    amparan en las cláusulas contractuales tipo de la Comisión Europea o en el
+    Marco de Privacidad de Datos UE-EEUU, según el caso.
+  </p>
+
+  <h2>6. Cuánto tiempo conservamos tus datos</h2>
+  <ul>
+    <li><strong>Consultas que no acaban en contratación:</strong> hasta un año desde el último contacto.</li>
+    <li><strong>Clientes:</strong> durante la relación y después el plazo legal que corresponda, seis años en materia contable.</li>
+    <li><strong>Estadísticas:</strong> son agregadas y no contienen datos personales.</li>
+  </ul>
+
+  <h2>7. Cookies</h2>
+  <p>
+    <strong>Esta web no usa cookies.</strong> Tampoco guarda nada en el
+    almacenamiento local de tu navegador. Por eso no verás ningún aviso de cookies:
+    no hay ninguna que aceptar.
+  </p>
+  <p>
+    Si abres el calendario de reservas, Google puede usar sus propias cookies
+    dentro de ese contenido. Eso ocurre solo si lo abres tú.
+  </p>
+
+  <h2>8. Tus derechos</h2>
+  <p>
+    Puedes pedirnos <strong>acceder</strong> a tus datos, <strong>rectificarlos</strong>,
+    <strong>suprimirlos</strong>, <strong>limitar</strong> u <strong>oponerte</strong> a
+    su tratamiento, y solicitar su <strong>portabilidad</strong>. También puedes retirar
+    tu consentimiento en cualquier momento, sin que eso afecte al tratamiento anterior.
+  </p>
+  <p>
+    Escribe a <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a> indicando qué
+    derecho quieres ejercer. Responderemos en el plazo de un mes.
+  </p>
+  <p>
+    Si crees que no hemos atendido tu solicitud correctamente, puedes reclamar ante la
+    <a href="https://www.aepd.es" target="_blank" rel="noopener">Agencia Española de
+    Protección de Datos</a>.
+  </p>
+
+  <h2>9. Cambios en esta política</h2>
+  <p>
+    Si cambiamos cómo tratamos los datos, actualizaremos esta página y la fecha que
+    aparece arriba.
+  </p>
+</Legal>
