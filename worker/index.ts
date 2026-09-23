@@ -123,7 +123,10 @@ async function handleContact(request: Request, env: Env): Promise<Response> {
       accept: 'application/json',
     },
     body: JSON.stringify({
-      sender: { email: FROM, name: 'Magic Orden' },
+      /* Display name, not an address. It is what shows in the From column
+         of her inbox, so it should read as a notification rather than as
+         Magic Orden emailing itself. One line to change. */
+      sender: { email: FROM, name: 'Nueva consulta' },
       to: [{ email: TO }],
       /* So she can simply hit reply and it goes to the customer. */
       replyTo: { email, name },
