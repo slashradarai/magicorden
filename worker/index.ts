@@ -28,10 +28,9 @@ interface Env {
      leads@  where form enquiries land, so they can be filtered cleanly
    All three forward to the same Gmail via Cloudflare Email Routing.
 
-   FROM stays hola@ because it is already a verified sender in Brevo.
-   Sending as leads@ would mean verifying it there too, for no benefit:
-   Reply-To is set to the customer, so the From address is never what
-   she replies from. */
+   Notifications are sent FROM leads@ as well as TO it. See the note on
+   FROM below: the From address is never what she replies from, because
+   Reply-To carries the customer. */
 const TO = 'leads@magicorden.com';
 
 /* Same address as TO, deliberately. It must NOT be set up as "Send as" in
