@@ -2,7 +2,7 @@
 import { Image } from 'astro:assets';
 import { AUTHOR } from '../config';
 
-interface Props { size?: 'sm' | 'lg' }
+interface Props { size?: 'xs' | 'sm' | 'lg' }
 const { size = 'sm' } = Astro.props;
 
 /* Picks up any file named src/assets/author-*.{jpg,jpeg,png,webp}.
@@ -14,9 +14,9 @@ const found = import.meta.glob<{ default: ImageMetadata }>(
 );
 const avatar = Object.values(found)[0]?.default;
 
-const px = size === 'lg' ? 80 : 44;
-const box = size === 'lg' ? 'h-20 w-20' : 'h-11 w-11';
-const type = size === 'lg' ? 'text-3xl' : 'text-lg';
+const px = size === 'lg' ? 80 : size === 'xs' ? 32 : 44;
+const box = size === 'lg' ? 'h-20 w-20' : size === 'xs' ? 'h-8 w-8' : 'h-11 w-11';
+const type = size === 'lg' ? 'text-3xl' : size === 'xs' ? 'text-sm' : 'text-lg';
 ---
 {avatar ? (
   <Image
